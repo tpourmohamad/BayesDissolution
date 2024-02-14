@@ -1,24 +1,29 @@
 Package: BayesDissolution
 Title: Bayesian Models for Dissolution Testing
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
-    person(given = "Tony",
+    c(person(given = "Tony",
            family = "Pourmohamad",
            role = c("aut", "cre"),
-           email = "tpourmohamad@gmail.com")
-Description: The package fits Bayesian models to dissolution data sets that can be used for dissolution testing. Currently the package includes the the Bayesian models outlined in Pourmohamad et al. (2022) <https://doi.org/10.1111/rssc.12535>, but more models may be added over time.
+           email = "tpourmohamad@gmail.com"),
+      person(given = "Steven",
+           family = "Novick",
+           role = "ctb"))
+Description: Fits Bayesian models (amongst others) to dissolution data sets that can be used for dissolution testing. The package was originally constructed to include only the Bayesian models outlined in Pourmohamad et al. (2022) <doi:10.1111/rssc.12535>. However, additional Bayesian and non-Bayesian models (based on bootstrapping and generalized pivotal quanties) have also been added. More models may be added over time.
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Imports:
+        coda,
         geoR,
-        ggplot2,
-        LaplacesDemon,
         MCMCpack,
         mnormt,
         pscl,
-        scales
+        stats
 Depends: 
     R (>= 2.10)
+Suggests:
+        ggplot2,
+        scales

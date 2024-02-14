@@ -5,7 +5,9 @@
 #' @param dis_data A data frame containing the dissolution data. The first column of the data frame should denote
 #'  the group labels identifying whether a given dissolution belongs to the "reference" or "test" formulation group.
 #'  For a given dissolution run, the remaining columns of the data frame contains the individual run's dissolution
-#'  measurements sorted in time.
+#'  measurements sorted in time. Alternatively, the user may provide a data object of class dis_data containing the
+#'  dissolution data. See the \code{make_dis_data()} function for the particular structure of the data object.
+#' @param B A positive integer specifying the number of posterior samples to draw. By default \code{B} is set to 10000.
 #' @param locs A vector in ascending order that corresponds to each time point the dissolution data was measured at.
 #' @param B A positive integer specifying the number of posterior samples to draw. By default \code{B} is set to 10000.
 #' @param n_interp An integer value specifying the number of time points to interpolate at. This sets the interploated points to be to \code{seq(1st time point, last time point, length = n_interp)}.
@@ -23,20 +25,21 @@
 #'    \item \code{prop_psi}: proposal variance for the parameter psi
 #' }
 #' @param adaptive logical; an option for using adaptive MCMC. If \code{adaptive = TRUE}, this will replace both \code{prop_phi} and \code{prop_psi} by using past MCMC draws to inform the proposal variance.
-#' @return The function returns a list ofsummary statistics and B posterior samples for parameters of the model. More specifically it returns:
+#' @return The function returns a list of summary statistics and B posterior samples for parameters of the model. More specifically it returns:
 #' \itemize{
 #'   \item delta: The average delta value over the posterior samples of delta. The definition of delta is given in Novick et. al 2015.
 #'   \item f2: The average f2 value over the posterior samples of f2.
-#'   \item mcmc_chains: A list of posterior samples for delta, f2, the mean paramters (\code{mu_pars}), and the covariance parameters (\code{cov_pars}).
+#'   \item mcmc_chains: A list of posterior samples for delta, f2, the mean parameters (\code{mu_pars}), and the covariance parameters (\code{cov_pars}).
 #' }
-#' @note You should always check MCMC diagnostics on the posterior samples before drawing conclusions. Likewise, plots of the predicted dissolution curves should also be checked to evaulate if the model fit to the observed data seems reasonable.
+#' @note You should always check MCMC diagnostics on the posterior samples before drawing conclusions. Likewise, plots of the predicted dissolution curves should also be checked to evaluate if the model fit to the observed data seems reasonable.
 #' @references Novick, S., Shen, Y., Yang, H., Peterson, J., LeBlond, D., and Altan, S. (2015). Dissolution Curve Comparisons Through the F2 Parameter, a Bayesian Extension of the f2 Statistic. Journal of Biopharmaceutical Statistics, 25(2):351-371.
 #' @references Pourmohamad, T., Oliva Aviles, C.M., and Richardson, R. Gaussian Process Modeling for Dissolution Curve Comparisons. Journal of the Royal Statistical Society, Series C, 71(2):331-351.
 #' @examples
 #' ### dis_data comes loaded with the package
-#' ### We set B = 1000 to obtain 1000 posterior samples, you probably want to run it
-#' ### longer for say, B = 100000, but B = 1000 runs fast for illustrative purposes
-#' B <- 1000
+#' ### We set B = 100 to obtain 100 posterior samples, you probably want to run it
+#' ### longer for say, B = 100000, but B = 100 runs fast for illustrative purposes
+#' ### and passing CRAN checks
+#' B <- 100
 #'
 #' tp <- seq(10, 80, 10) # Time points
 #' burnin <- B * 0.1     # A 10% burn-in
@@ -111,6 +114,9 @@
 #' @export
 hgp <- function(dis_data, locs, B = 1000, n_interp = 30, control = list(), adaptive = FALSE){
 
+  if(class(dis_data)[1] == "dis_data"){
+    dis_data <- data.frame(rbind(data.frame(group = "Reference", dis_data$yRef), data.frame(group = "Test", dis_data$yTest)))
+  }
   if(B <= 0 | !is.numeric(B)){
     stop("B must be a positive integer.")
   }else if(!is.data.frame(dis_data)){

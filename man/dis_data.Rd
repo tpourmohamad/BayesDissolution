@@ -20,7 +20,7 @@ A data frame with 24 rows and 9 columns:
 }
 }
 \source{
-\url{https://www.sciencedirect.com/science/article/abs/pii/S0169743909001488}
+Ocana et al. (2009) \url{doi:10.1016/j.chemolab.2009.07.010}
 }
 \usage{
 dis_data

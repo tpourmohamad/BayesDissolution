@@ -18,5 +18,5 @@
 #'   \item{X8}{The eight time point at which measurements are made at.}
 #'   ...
 #' }
-#' @source \url{https://www.sciencedirect.com/science/article/abs/pii/S0169743909001488}
+#' @source  Ocana et al. (2009) <doi:10.1016/j.chemolab.2009.07.010>
 "dis_data"
