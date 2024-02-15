@@ -20,17 +20,23 @@
 process_results = function(name, f2.dist, ci.type = c("quantile", "HPD"), level, get.dist = FALSE){
 
   out <- list()
+  if (length(level) == 1){
+    level <- c(0.5 * (1 - level), 1 - 0.5 * (1 - level))
+  }
+
   out$info <- data.frame(type = name, K = length(f2.dist), level = level)
 
   ci.type <- match.arg(ci.type, several.ok = TRUE)
-  if(any(ci.type == "quantile"))
-    out$ci.quantile <- stats::quantile(f2.dist, p = c(0.5 * (1 - level), 1 - 0.5 * (1 - level)))
-  if(any(ci.type == "HPD"))
-    out$ci.HPD <- coda::HPDinterval(coda::as.mcmc(f2.dist), prob = level)
 
-  if(get.dist)
+  if(any(ci.type == "quantile")){
+    out$ci.quantile <- stats::quantile(f2.dist, p = level)
+  }
+  if(any(ci.type == "HPD")){
+    out$ci.HPD <- coda::HPDinterval(coda::as.mcmc(f2.dist), prob = diff(level))
+  }
+  if(get.dist){
     out$f2.dist <- f2.dist
-
+  }
   return(out)
 
 }
